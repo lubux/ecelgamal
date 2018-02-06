@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.9)
 project(ecelgamal)
 
 find_package(JNI)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include ${JNI_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/out)
 
@@ -13,6 +13,8 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3")
 
 add_executable(ecelgamal testing.cpp ecelgamal.h ecelgamal.c crtecelgamal.c crtecelgamal.h)
 add_library(ecelgamal-lib SHARED ecelgamal.h ecelgamal.c crtecelgamal.c crtecelgamal.h)
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include ${JNI_INCLUDE_DIRS})
 add_library(ecelgamal-jni-wrapper SHARED crtecelgamal_jni_wrapper.c ecelgamal.h ecelgamal.c)
 
 
