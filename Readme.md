@@ -51,4 +51,4 @@ Avg ENC Time 1.44365 Avg DEC Time 1.75101
 ```
 
 ## Security
-This libraey is for academic purposes, gives no security gurantess and may contain implementation vulnerabilities.
+This library is for academic purposes, gives no security guarantees and may contain implementation vulnerabilities.
