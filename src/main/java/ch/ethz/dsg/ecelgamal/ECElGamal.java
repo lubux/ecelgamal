@@ -1,14 +1,49 @@
+/*
+ * Copyright (c) 2018, Institute for Pervasive Computing, ETH Zurich.
+ * All rights reserved.
+ *
+ * Author:
+ *       Lukas Burkhalter <lubu@inf.ethz.ch>
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * 3. Neither the name of the copyright holder nor the names of its
+ *    contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ * FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE
+ * COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package ch.ethz.dsg.ecelgamal;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.security.Key;
 import java.util.HashSet;
 import java.util.Random;
 
 import org.scijava.nativelib.NativeLibraryUtil;
-import org.scijava.nativelib.NativeLoader;
 
+/**
+ * Additive homomoprhic EC-El-Gamal wrapper around the native C implementation
+ */
 public class ECElGamal {
 
     public static int NID_X9_62_prime192v1 = 409;
@@ -85,23 +120,47 @@ public class ECElGamal {
         return new CRTParams(ds, d, numBits);
     }
 
+    /**
+     * Returns the default CRT-Params for 32-bit integers
+     * @return CRT-pramams for 32-bit integers
+     */
     public static CRTParams getDefault32BitParams() {
         return generateParams(default32BitParams, 17);
     }
 
+    /**
+     * Returns the default CRT-Params for 64-bit integers
+     * @return CRT-pramams for 64-bit integers
+     */
     public static CRTParams getDefault64BitParams() {
         return generateParams(default64BitParams, 22);
     }
 
-
+    /**
+     * Generates a new EC-ElGamal key-pair
+     * @param params the crt-params to attach
+     * @return the newly generated key
+     */
     public static ECElGamalKey generateNewKey(CRTParams params) {
         return new ECElGamalKey(generateKey(), params);
     }
 
+    /**
+     * Computes the ECElGamalKey based on an encoded key and the CRT-params to attach.
+     * @param encodedKey an encoded version of the ECElGamalKey
+     * @param params the global CRT-Params
+     * @return an ECElGamalKey instance
+     */
     public static ECElGamalKey restoreKey(byte[] encodedKey, CRTParams params) {
         return new ECElGamalKey(encodedKey, params);
     }
 
+    /**
+     * Encrypts an integer with homomorphic EC-ElGamal
+     * @param integer the integer to encrypt (!pay attention to the bit limits from the CRT-Params!)
+     * @param key the ECElGamalKey key
+     * @return the encrypted integer
+     */
     public static ECElGamalCiphertext encrypt(BigInteger integer, ECElGamalKey key) {
         byte[][] ciphertexts = new byte[key.params.ds.length][];
         for(int iter=0; iter<ciphertexts.length; iter++) {
@@ -111,6 +170,13 @@ public class ECElGamal {
         return new ECElGamalCiphertext(ciphertexts);
     }
 
+    /**
+     * Decrypts an ECElGamalCiphertext and returns the plaintext integer.
+     * !Does not return negative numbers, If needed use decrypt32, decrypt64 instead for int and long!
+     * @param ciphertext the EC-ElGamal ciphertext
+     * @param key the the EC-ElGamal key
+     * @return the positive plaintext value as an BigInteger
+     */
     public static BigInteger decrypt(ECElGamalCiphertext ciphertext, ECElGamalKey key) {
         BigInteger[] subMessages = new BigInteger[ciphertext.getNumPartitions()];
         for(int iter=0; iter<subMessages.length; iter++) {
@@ -119,6 +185,13 @@ public class ECElGamal {
         return solveCRT(subMessages, key.params.ds, key.params.d);
     }
 
+    /**
+     * Decrypts an ECElGamalCiphertext and returns the plaintext integer of type int.
+     * Supports also negative integers.
+     * @param ciphertext the EC-ElGamal ciphertext
+     * @param key the the EC-ElGamal key
+     * @return the plaintext value of type int
+     */
     public static int decrypt32(ECElGamalCiphertext ciphertext, ECElGamalKey key) {
         BigInteger res = decrypt(ciphertext, key);
         if (res.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0) {
@@ -127,6 +200,13 @@ public class ECElGamal {
         return res.intValue();
     }
 
+    /**
+     * Decrypts an ECElGamalCiphertext and returns the plaintext integer of type long.
+     * Supports also negative integers.
+     * @param ciphertext the EC-ElGamal ciphertext
+     * @param key the the EC-ElGamal key
+     * @return the plaintext value of type long
+     */
     public static long decrypt64(ECElGamalCiphertext ciphertext, ECElGamalKey key) {
         BigInteger res = decrypt(ciphertext, key);
         if (res.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0) {
@@ -135,6 +215,12 @@ public class ECElGamal {
         return res.longValue();
     }
 
+    /**
+     * Adds two EC-El-Gamal ciphertexts and outputs the resulting ciphertext.
+     * @param c1 first ciphertext
+     * @param c2 second ciphertext
+     * @return the resulting ciphertext of the addition
+     */
     public static ECElGamalCiphertext add(ECElGamalCiphertext c1, ECElGamalCiphertext c2) {
         byte[][] result = new byte[c1.getNumPartitions()][];
         for(int iter=0; iter<result.length; iter++) {
@@ -151,6 +237,13 @@ public class ECElGamal {
     private static native byte[] encrypt(long value, byte[] key_oct);
     private static native long decrypt(byte[] ciphertext_oct, byte[] key_oct, boolean use_bsgs);
     private static native byte[] homAdd(byte[] ciphertext_1_oct, byte[] ciphertext_2_oct);
+
+    /**
+     * Initializes a BSGS table for the decryption
+     * (optional) default size 2^16.
+     * @param table_size the number of table entries
+     * @return 0 ok -1 error
+     */
     public static native int initBsgsTable(int table_size);
     private static native int getPointSize();
 
