@@ -5,6 +5,8 @@ import java.math.BigInteger;
 import java.security.Key;
 import java.util.HashSet;
 import java.util.Random;
+
+import org.scijava.nativelib.NativeLibraryUtil;
 import org.scijava.nativelib.NativeLoader;
 
 public class ECElGamal {
@@ -18,7 +20,7 @@ public class ECElGamal {
 
     static {
         try {
-            NativeLoader.loadLibrary("ecelgamal-jni-wrapper");
+            NativeLibraryUtil.loadNativeLibrary(ECElGamal.class, "ecelgamal-jni-wrapper");
         } catch (Exception e) {
             e.printStackTrace();
         }
