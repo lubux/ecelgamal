@@ -1,7 +1,7 @@
 # EC-ElGamal
 
 This repository contains a C implementation of the additive homomorphic elliptic curve based EL-Gamal cryptographic scheme and a corresponding Java JNI wrapper. The elliptic curve operations of OpenSSL are used for the implementation.
-Ciphertexts can be added toghether such that the decrypted result corresponds to the sum of the plaintexts (i.e. p1 + p2 = Dec(Enc(p1) ++ Enc(p2))))
+Ciphertexts can be added toghether such that the decrypted result corresponds to the sum of the plaintexts (i.e. p1 + p2 = Dec(Enc(p1) ++ Enc(p2)))) similar to the Paillier-cryptosystem.
 
 ## Content 
 The *native* folder contains the C implementation of the scheme and the *src* folder contains the Java wrapper library.
