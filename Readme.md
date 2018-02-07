@@ -19,12 +19,12 @@ make
 
 ### Java Wrapper
 The Java library wraps the CRT based EC-ElGamal scheme implemented in C in a Java class with the JNI. The Java wrapper contains a prebuilt version of the library for linux64 and darwin64 (src/main/resources).
-To build the jar library, maven is required. The following command builds the library:
+To build the jar package, maven is required. The following command builds the library:
 
 ```
 mvn package
 ```
-Here an exmaple on how to use the library.
+Here an example on how to use the library.
 ```java
 ECElGamal.CRTParams params32 = ECElGamal.getDefault32BitParams();
 ECElGamal.ECElGamalKey key32 = ECElGamal.generateNewKey(params32)
