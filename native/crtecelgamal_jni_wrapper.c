@@ -75,6 +75,7 @@ jint Java_ch_ethz_dsg_ecelgamal_ECElGamal_deinitECElGamal(JNIEnv *env,
     if (table != NULL) {
         gamal_free_bsgs_table(*table);
         free(table);
+        table = NULL;
     }
     return (jint) gamal_deinit();
 }
@@ -138,7 +139,7 @@ jlong Java_ch_ethz_dsg_ecelgamal_ECElGamal_decrypt(JNIEnv *env, jobject javaThis
             (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), "Error on decryption");
         }
     } else {
-        if(!gamal_decrypt(&value, key, ciphertext, NULL)) {
+        if(gamal_decrypt(&value, key, ciphertext, NULL)) {
             (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), "Error on decryption");
         }
     }
