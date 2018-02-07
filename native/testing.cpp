@@ -189,7 +189,11 @@ int main() {
     //test1();
     //test2();
     //test2();
-    //bench_elgamal(100, 17);
-    bench_crtelgamal(1000, 10, 64);
+    std::cout << "Plain EC-ElGamal 32-bit integers" << std::endl;
+    bench_elgamal(10, 16);
+    std::cout << "CRT optimized EC-ElGamal 32-bit integers" << std::endl;
+    bench_crtelgamal(1000, 16, 32);
+    std::cout << "CRT optimized EC-ElGamal 64-bit integers" << std::endl;
+    bench_crtelgamal(1000, 17, 64);
     return 0;
 }
