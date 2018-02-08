@@ -3,6 +3,8 @@ project(ecelgamal)
 
 find_package(Java REQUIRED)
 find_package(JNI REQUIRED)
+find_package(OpenSSL REQUIRED)
+
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/out)
