@@ -110,11 +110,11 @@ void bench_elgamal(int num_entries, int tablebits) {
         auto dec_time = duration_cast<nanoseconds>(t2-t1).count();
 
         avg_dec += dec_time;
-        std::cout << " ENC Time: " <<  enc_time / 1000000.0 << " DEC Time: " << dec_time / 1000000.0 << std::endl;
+        std::cout << " ENC Time: " <<  enc_time / 1000000.0 << "ms DEC Time: " << dec_time / 1000000.0 << " ms" << std::endl;
     }
     avg_enc = avg_enc / num_entries;
     avg_dec = avg_dec / num_entries;
-    std::cout << "Avg ENC Time " <<  avg_enc / 1000000.0 << " Avg DEC Time " << avg_dec / 1000000.0 << std::endl;
+    std::cout << "Avg ENC Time " <<  avg_enc / 1000000.0 << "ms Avg DEC Time " << avg_dec / 1000000.0 << " ms" << std::endl;
 
     gamal_cipher_clear(cipher);
     gamal_key_clear(key);
@@ -197,14 +197,14 @@ void bench_crtelgamal(int num_entries, int tablebits, int plainbits) {
         auto dec_time = duration_cast<nanoseconds>(t2-t1).count();
 
         avg_dec += dec_time;
-        std::cout << " ENC Time: " <<  enc_time / 1000000.0 << " DEC Time: " << dec_time / 1000000.0 << std::endl;
+        std::cout << " ENC Time: " <<  enc_time / 1000000.0 << "ms DEC Time: " << dec_time / 1000000.0 << "ms " << std::endl;
 
         if (after != plain)
             std::cout << "ERROR" << std::endl;
     }
     avg_enc = avg_enc / num_entries;
     avg_dec = avg_dec / num_entries;
-    std::cout << "Avg ENC Time " <<  avg_enc / 1000000.0 << " Avg DEC Time " << avg_dec / 1000000.0 << std::endl;
+    std::cout << "Avg ENC Time " <<  avg_enc / 1000000.0 << "ms Avg DEC Time " << avg_dec / 1000000.0 << "ms " << std::endl;
 
     crtgamal_ciphertext_free(cipher);
     crtgamal_keys_clear(key);
