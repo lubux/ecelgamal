@@ -69,7 +69,7 @@ public class ECElGamal {
                 e1.printStackTrace();
             }
         }*/
-        initEcElGamal(NID_X9_62_prime192v1);
+        initEcElGamal(NID_X9_62_prime256v1);
     }
 
     public static synchronized void changeGroup(int newGroupID) {
