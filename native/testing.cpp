@@ -90,7 +90,7 @@ void bench_elgamal(int num_entries, int tablebits) {
     srand (time(NULL));
     double avg_enc = 0, avg_dec = 0;
 
-    gamal_init(DEFAULT_CURVE);
+    gamal_init(CURVE_256_SEC);
     gamal_generate_keys(key);
     gamal_init_bsgs_table(table, (dig_t) 1L << tablebits);
 
@@ -172,7 +172,7 @@ void bench_crtelgamal(int num_entries, int tablebits, int plainbits) {
     srand (time(NULL));
     double avg_enc = 0, avg_dec = 0;
 
-    crtgamal_init(DEFAULT_CURVE);
+    crtgamal_init(CURVE_256_SEC);
     if (plainbits>32)
         crt_params_create_default(params, DEFAULT_64_INTEGER_PARAMS);
     else
