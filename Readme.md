@@ -3,12 +3,12 @@
 This repository contains a C implementation of the additive homomorphic elliptic curve based EL-Gamal cryptographic scheme and a corresponding Java JNI wrapper. The elliptic curve operations of OpenSSL are used for the implementation.
 Ciphertexts can be added toghether such that the decrypted result corresponds to the sum of the plaintexts (i.e. p1 + p2 = Dec(Enc(p1) ++ Enc(p2)))) similar to the Paillier-cryptosystem.
 
+
 ## Content 
 The *native* folder contains the C implementation of the scheme and the *src* folder contains the Java wrapper library.
 
 ### C Library
-The C library contains two versions of EC-Elgamal, a basic version and a Chinese Remainder Thereom (CRT) based optimized version. The library builds with cmake. To compile the library and run the benchmark run: 
-Note that OpenSSL is required!
+The C library contains two versions of EC-Elgamal, a basic version and a Chinese Remainder Thereom (CRT) based optimized version, as introduced by [Pilatus](http://www.vs.inf.ethz.ch/publ/papers/mshafagh_SenSys17_Pilatus.pdf). The library builds with cmake. To compile the library and run the benchmark run: (Note that OpenSSL is required!)
 
 ```
 cd native
@@ -16,6 +16,7 @@ cmake .
 make
 ./out/ecelgamal
 ```
+
 
 ### Java Wrapper
 The Java library wraps the CRT based EC-ElGamal scheme implemented in C in a Java class with the JNI. The Java wrapper contains a prebuilt version of the library for linux64 and darwin64 (src/main/resources).
@@ -41,13 +42,13 @@ assertEquals(val1 + val2, decriptedVal);
 On a 192-bit curve and with an EC2 micro instance in ms.
  ```
 Plain EC-ElGamal 32-bit integers
-Avg ENC Time 0.514724 Avg DEC Time 545.581
+Avg ENC Time 0.514724 ms Avg DEC Time 545.581 ms
 
 CRT optimized EC-ElGamal 32-bit integers
-Avg ENC Time 0.964643 Avg DEC Time 0.556396
+Avg ENC Time 0.964643 ms Avg DEC Time 0.556396 ms
 
 CRT optimized EC-ElGamal 64-bit integers
-Avg ENC Time 1.44365 Avg DEC Time 1.75101
+Avg ENC Time 1.44365 ms Avg DEC Time 1.75101 ms
 ```
 
 ## Security
