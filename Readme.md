@@ -46,7 +46,7 @@ assertEquals(val1 + val2, decriptedVal);
 ```
 
 ## Performance 
-On a 256-bit curve and with an EC2 micro instance in ms.
+On a 256-bit curve and with an AWS EC2 micro instance in ms. (OpenSSL 1.0.2g)
  ```
 Plain EC-ElGamal 32-bit integers
 Avg ENC Time 0.238853ms Avg DEC Time 275.811 ms
