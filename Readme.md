@@ -46,16 +46,16 @@ assertEquals(val1 + val2, decriptedVal);
 ```
 
 ## Performance 
-On a 192-bit curve and with an EC2 micro instance in ms.
+On a 256-bit curve and with an EC2 micro instance in ms.
  ```
 Plain EC-ElGamal 32-bit integers
-Avg ENC Time 0.514724 ms Avg DEC Time 545.581 ms
+Avg ENC Time 0.238853ms Avg DEC Time 275.811 ms
 
 CRT optimized EC-ElGamal 32-bit integers
-Avg ENC Time 0.964643 ms Avg DEC Time 0.556396 ms
+Avg ENC Time 0.417877ms Avg DEC Time 0.245387ms 
 
 CRT optimized EC-ElGamal 64-bit integers
-Avg ENC Time 1.44365 ms Avg DEC Time 1.75101 ms
+Avg ENC Time 0.608484ms Avg DEC Time 0.705621ms 
 ```
 
 ## Security
