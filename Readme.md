@@ -7,8 +7,15 @@ Ciphertexts can be added toghether such that the decrypted result corresponds to
 ## Content 
 The *native* folder contains the C implementation of the scheme and the *src* folder contains the Java wrapper library.
 
+### Prerequisites 
+Make sure you have the following installed:
+ * [CMake](https://cmake.org/)
+ * [OpenSSL](http://www.openssl.org/source/)
+ * [Maven](https://maven.apache.org/)
+ * Java JDK 1.8
+
 ### C Library
-The C library contains two versions of EC-Elgamal, a basic version and a Chinese Remainder Thereom (CRT) based optimized version, as introduced by [Pilatus](http://www.vs.inf.ethz.ch/publ/papers/mshafagh_SenSys17_Pilatus.pdf). The library builds with cmake. To compile the library and run the benchmark run: (Note that OpenSSL is required!)
+The C library contains two versions of EC-Elgamal, a basic version and a Chinese Remainder Thereom (CRT) based optimized version, as introduced by [Pilatus](http://www.vs.inf.ethz.ch/publ/papers/mshafagh_SenSys17_Pilatus.pdf). The library builds with cmake. To compile the library and run the benchmark run: 
 
 ```
 cd native
