@@ -87,9 +87,9 @@ jbyteArray Java_ch_ethz_dsg_ecelgamal_ECElGamal_generateKey(JNIEnv *env, jobject
     jbyteArray res;
 
     gamal_generate_keys(key);
-    key_size = get_encoded_key_size(key);
+    key_size = get_encoded_key_size(key, 0);
     buffer = (unsigned char *) malloc(key_size);
-    encode_key(buffer, (int) key_size, key);
+    encode_key(buffer, (int) key_size, key, 0);
     res = as_byte_array(env, buffer, (int) key_size);
 
     free(buffer);

@@ -34,6 +34,10 @@
 
 #include "ecelgamal.h"
 
+#define KEY_UNCOMPRESSED 0
+#define KEY_COMPRESSED 1
+#define KEY_PUBLIC 2
+
 
 EC_POINT *multiply_constant(const EC_POINT *in, const BIGNUM *n, EC_GROUP *curve_group) {
     EC_POINT *res;
@@ -401,32 +405,50 @@ int decode_ciphertext(gamal_ciphertext_t ciphertext, unsigned char *buff, int si
     return 0;
 }
 
-size_t get_encoded_key_size(gamal_key_t key) {
+size_t get_encoded_key_size(gamal_key_t key, int compressed) {
     size_t size = 1;
     BN_CTX *ctx = BN_CTX_new();
     if(!key->is_public) {
-        size +=  BN_num_bytes(key->secret);
+        if (compressed)
+            size +=  BN_num_bytes(key->secret);
+        else
+            size +=  BN_num_bytes(key->secret) +
+                    EC_POINT_point2oct(init_group, key->Y, POINT_CONVERSION_COMPRESSED, NULL, 0, ctx);
     } else {
         size += EC_POINT_point2oct(init_group, key->Y, POINT_CONVERSION_COMPRESSED, NULL, 0, ctx);
     }
     BN_CTX_free(ctx);
     return size;
 }
-int encode_key(unsigned char *buff, int size, gamal_key_t key) {
+int encode_key(unsigned char *buff, int size, gamal_key_t key, int compressed) {
+    size_t len_point;
     unsigned char *cur_ptr = buff;
     size_t size_data;
     BN_CTX *ctx = BN_CTX_new();
 
+    len_point = (size_t) gamal_get_point_compressed_size();
+
     if (size < 3)
         return -1;
-    else
-        buff[0] = (unsigned char) key->is_public;
+
+    if (key->is_public) {
+        buff[0] = KEY_PUBLIC;
+    } else {
+        if (compressed)
+            buff[0] = KEY_COMPRESSED;
+        else
+            buff[0] = KEY_UNCOMPRESSED;
+
+    }
 
     cur_ptr++;
     if (key->is_public) {
-        size_data = gamal_get_point_compressed_size();
+        size_data = len_point;
     } else {
-        size_data = (size_t) BN_num_bytes(key->secret);
+        if (compressed)
+            size_data = (size_t) BN_num_bytes(key->secret);
+        else
+            size_data = (size_t) BN_num_bytes(key->secret) + len_point;
 
     }
 
@@ -436,39 +458,64 @@ int encode_key(unsigned char *buff, int size, gamal_key_t key) {
     if (key->is_public) {
         EC_POINT_point2oct(init_group, key->Y, POINT_CONVERSION_COMPRESSED, cur_ptr, size_data, ctx);
     } else {
-        BN_bn2bin(key->secret, cur_ptr);
+        if (compressed) {
+            BN_bn2bin(key->secret, cur_ptr);
+        } else {
+            EC_POINT_point2oct(init_group, key->Y, POINT_CONVERSION_COMPRESSED, cur_ptr, len_point, ctx);
+            cur_ptr += len_point;
+            BN_bn2bin(key->secret, cur_ptr);
+        }
     }
-
     BN_CTX_free(ctx);
     return 0;
 }
 int decode_key(gamal_key_t key, unsigned char* buff, int size) {
+    size_t len_point;
     char is_pub;
+    int is_compressed = 0, decode_id = 0;
     unsigned char *cur_ptr = buff;
     size_t size_data;
     BN_CTX *ctx = BN_CTX_new();
 
+    len_point = (size_t) gamal_get_point_compressed_size();
+
     if (size < 3)
         return -1;
+
+    decode_id = (int) buff[0];
+
+    if (decode_id == KEY_COMPRESSED)
+        is_compressed = 1;
+
+    if (decode_id == KEY_PUBLIC)
+        is_pub = 1;
     else
-        is_pub = (char) buff[0];
+        is_pub = 0;
 
     key->secret = BN_new();
     cur_ptr++;
     key->is_public = is_pub;
     if (key->is_public) {
-        size_data = gamal_get_point_compressed_size();
+        size_data = len_point;
     } else {
-        size_data = size - 1;
+        size_data = (size_t) size - 1;
     }
 
     if (size < 1 + size_data)
         return  -1;
     if (is_pub) {
+        key->Y = EC_POINT_new(init_group);
         EC_POINT_oct2point(init_group, key->Y, cur_ptr, size_data, ctx);
     } else {
-        BN_bin2bn(cur_ptr, (int) size_data, key->secret);
-        key->Y = multiply_generator(key->secret, init_group);
+        if (is_compressed) {
+            BN_bin2bn(cur_ptr, (int) size_data, key->secret);
+            key->Y = multiply_generator(key->secret, init_group);
+        } else {
+            key->Y = EC_POINT_new(init_group);
+            EC_POINT_oct2point(init_group, key->Y, cur_ptr, len_point, ctx);
+            cur_ptr += len_point;
+            BN_bin2bn(cur_ptr, (int) size_data - (int) len_point, key->secret);
+        }
     }
     BN_CTX_free(ctx);
     return 0;

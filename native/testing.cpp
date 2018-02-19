@@ -66,9 +66,9 @@ int test1() {
     decode_ciphertext(cipher_after, buff, 1000000);
     free(buff);
 
-    size = get_encoded_key_size(key);
+    size = get_encoded_key_size(key, 0);
     buff = (unsigned char *) malloc(size);
-    encode_key(buff, size, key);
+    encode_key(buff, size, key, 0);
     decode_key(key_decoded, buff, size);
 
 
@@ -212,11 +212,62 @@ void bench_crtelgamal(int num_entries, int tablebits, int plainbits) {
     gamal_deinit();
 }
 
-void test3() {
+int test() {
+    gamal_key_t key, key_decoded;
+    gamal_ciphertext_t cipher, cipher_after;
+    bsgs_table_t table;
+    dig_t plain = 36435345, res, res2;
+    unsigned char *buff;
+    size_t size;
+
+    gamal_init(DEFAULT_CURVE);
+
+    gamal_generate_keys(key);
 
 
+    gamal_encrypt(cipher, key, plain);
+
+    std::cout << "key gen + enc ok" << std::endl;
+
+    buff = (unsigned char *) malloc(get_encoded_ciphertext_size(cipher));
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
+    encode_ciphertext(buff, 100000, cipher);
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+    auto encode_time = duration_cast<nanoseconds>(t2-t1).count();
+    std::cout << " ENCODE " <<  encode_time / 1000000.0 << std::endl;
+
+    t1 = high_resolution_clock::now();
+    decode_ciphertext(cipher_after, buff, 1000000);
+    t2 = high_resolution_clock::now();
+    auto decode_time = duration_cast<nanoseconds>(t2-t1).count();
+    std::cout << " DECODE " <<  decode_time / 1000000.0 << std::endl;
+
+    free(buff);
+
+    size = get_encoded_key_size(key, 0);
+    buff = (unsigned char *) malloc(size);
+    t1 = high_resolution_clock::now();
+    encode_key(buff, size, key, 0);
+    t2 = high_resolution_clock::now();
+    auto key_encode_time = duration_cast<nanoseconds>(t2-t1).count();
+    std::cout << " ENCODE KEY " <<  key_encode_time / 1000000.0 << std::endl;
+
+    t1 = high_resolution_clock::now();
+    decode_key(key_decoded, buff, size);
+    t2 = high_resolution_clock::now();
+    auto key_decode_time = duration_cast<nanoseconds>(t2-t1).count();
+    std::cout << " DECODE KEY " <<  key_decode_time / 1000000.0 << std::endl;
+
+
+    gamal_init_bsgs_table(table, 1L << 16);
+
+    gamal_decrypt(&res, key_decoded, cipher_after, table);
+
+    std::cout << "Before:  " << plain << " After: " << res << std::endl;
+    gamal_free_bsgs_table(table);
+    gamal_deinit();
+    return 0;
 }
-
 
 int main() {
     std::cout << "START" << std::endl;
@@ -228,6 +279,6 @@ int main() {
     std::cout << "CRT optimized EC-ElGamal 32-bit integers" << std::endl;
     bench_crtelgamal(1000, 16, 32);
     std::cout << "CRT optimized EC-ElGamal 64-bit integers" << std::endl;
-    bench_crtelgamal(1000, 17, 64);
+    bench_crtelgamal(1000, 17, 64);*/
     return 0;
 }

@@ -56,8 +56,8 @@ typedef struct gamal_key *gamal_key_ptr;
 typedef struct gamal_key gamal_key_t[1];
 typedef uint64_t dig_t;
 
-size_t get_encoded_key_size(gamal_key_t key);
-int encode_key(unsigned char* buff, int size, gamal_key_t key);
+size_t get_encoded_key_size(gamal_key_t key, int compressed);
+int encode_key(unsigned char* buff, int size, gamal_key_t key, int compressed);
 int decode_key(gamal_key_t key, unsigned char* buff, int size);
 
 struct gamal_ciphertext {
