@@ -279,6 +279,6 @@ int main() {
     std::cout << "CRT optimized EC-ElGamal 32-bit integers" << std::endl;
     bench_crtelgamal(1000, 16, 32);
     std::cout << "CRT optimized EC-ElGamal 64-bit integers" << std::endl;
-    bench_crtelgamal(1000, 17, 64);*/
+    bench_crtelgamal(1000, 17, 64);
     return 0;
 }
