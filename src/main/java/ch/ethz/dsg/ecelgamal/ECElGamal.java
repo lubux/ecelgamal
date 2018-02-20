@@ -60,15 +60,6 @@ public class ECElGamal {
             e.printStackTrace();
         }
 
-        /*try {
-            NativeUtils.loadLibraryFromJar("/lib/osx_64/libecelgamal-jni-wrapper.dylib");
-        } catch (IOException e) {
-            try {
-                NativeUtils.loadLibraryFromJar("/libecelgamal-jni-wrapper.so");
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        }*/
         initEcElGamal(NID_X9_62_prime256v1);
     }
 

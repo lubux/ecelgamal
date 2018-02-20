@@ -270,7 +270,7 @@ int test() {
 }
 
 int main() {
-    std::cout << "START" << std::endl;
+    std::cout << OPENSSL_VERSION_TEXT << std::endl;
     //test1();
     //test2();
     //test2();

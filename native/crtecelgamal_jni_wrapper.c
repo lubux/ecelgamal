@@ -44,23 +44,26 @@ jbyteArray as_byte_array(JNIEnv *env, unsigned char *buf, int len) {
 
 unsigned char *as_unsigned_char_array(JNIEnv *env, jbyteArray array, int *len) {
     *len = (*env)->GetArrayLength(env, array);
-    unsigned char *buf = (unsigned char *) malloc((size_t) *len);
-    (*env)->GetByteArrayRegion(env, array, 0, *len, (jbyte *) buf);
-    return buf;
+    return (unsigned char *) (*env)->GetByteArrayElements(env, array, 0);
 }
+
+void free_jvm_char_array(JNIEnv *env, jbyteArray array, unsigned char * buff) {
+    (*env)->ReleaseByteArrayElements(env, array, (jbyte *) buff, 0);
+}
+
 
 void get_key(JNIEnv *env, gamal_key_t key, jbyteArray array) {
     int buff_len;
     unsigned char *buffer = as_unsigned_char_array(env, array, &buff_len);
     decode_key(key, buffer, buff_len);
-    free(buffer);
+    free_jvm_char_array(env, array, buffer);
 }
 
 void get_cipher(JNIEnv *env, gamal_ciphertext_t cipher, jbyteArray array) {
     int buff_len;
     unsigned char *buffer = as_unsigned_char_array(env, array, &buff_len);
     decode_ciphertext(cipher, buffer, buff_len);
-    free(buffer);
+    free_jvm_char_array(env, array, buffer);
 }
 
 bsgs_table_t *table = NULL;
