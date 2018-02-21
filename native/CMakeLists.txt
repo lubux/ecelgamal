@@ -1,11 +1,23 @@
 cmake_minimum_required(VERSION 3.5)
 project(ecelgamal)
 
+set(DO_STATIC  TRUE)
+set(PATH_STATIC /usr/local/Cellar/openssl@1.1/1.1.0g_1/lib)
+
 find_package(Java REQUIRED)
 find_package(JNI REQUIRED)
-find_package(OpenSSL REQUIRED)
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
+if(${DO_STATIC})
+    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include ${PATH_STATIC})
+    set(NEW_SSL_1  ${PATH_STATIC}/libssl.a)
+    set(NEW_SSL_2  ${PATH_STATIC}/libcrypto.a)
+else()
+    find_package(OpenSSL REQUIRED)
+    message(${OPENSSL_VERSION})
+    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
+    set(NEW_SSL_1  crypto)
+    set(NEW_SSL_2  ssl)
+endif()
 
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/out)
 
@@ -21,6 +33,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include ${JNI_INCLUDE_DIRS})
 add_library(ecelgamal-jni-wrapper SHARED crtecelgamal_jni_wrapper.c ecelgamal.h ecelgamal.c)
 
 
-target_link_libraries(ecelgamal crypto ssl)
-target_link_libraries(ecelgamal-jni-wrapper crypto ssl)
-target_link_libraries(ecelgamal-lib  crypto ssl)
+target_link_libraries(ecelgamal ${NEW_SSL_1} ${NEW_SSL_2})
+target_link_libraries(ecelgamal-jni-wrapper ${NEW_SSL_1} ${NEW_SSL_2})
+target_link_libraries(ecelgamal-lib  ${NEW_SSL_1} ${NEW_SSL_2})
