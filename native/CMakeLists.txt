@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(ecelgamal)
 
-set(DO_STATIC  TRUE)
+set(DO_STATIC  FALSE)
 set(PATH_STATIC /usr/local/Cellar/openssl@1.1/1.1.0g_1/lib)
 
 find_package(Java REQUIRED)
