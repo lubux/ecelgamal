@@ -34,7 +34,6 @@
 
 import ch.ethz.dsg.ecelgamal.ECElGamal;
 import org.junit.*;
-import org.junit.rules.Stopwatch;
 
 import java.math.BigInteger;
 import java.util.Random;
@@ -114,16 +113,19 @@ public class ECElGamalTest {
         }
     }
 
+
+
     private static double convertMS(long val) {
         return ((double) val) / 1000000.0;
     }
 
     @Test
     public void measureTime() {
-        long val1, val2;
+        long val1, val2, timeadd;
+        int add = 10;
         for (int i=0; i<100; i++) {
-            val1 = rand.nextLong()/2;
-            val2 = rand.nextLong()/2;
+            val1 = rand.nextLong()/10000;
+            val2 = rand.nextLong()/10000;
 
             ECElGamal.ECElGamalCiphertext cipher1, cipher2;
 
@@ -132,12 +134,17 @@ public class ECElGamalTest {
             encrypt = System.nanoTime() - encrypt;
 
             cipher2 = ECElGamal.encrypt(BigInteger.valueOf(val2), key64);
-            cipher1 = ECElGamal.add(cipher1, cipher2);
+            long addTime = System.nanoTime();
+            for(int it=0; it<add; it++) {
+                cipher1 = ECElGamal.add(cipher1, cipher2);
+            }
+            addTime =  (System.nanoTime() - addTime) / add;
+
             long decrypt = System.nanoTime();
             long decriptedVal = ECElGamal.decrypt64(cipher1, key64);
             decrypt = System.nanoTime() - decrypt;
-            assertEquals(val1 + val2, decriptedVal);
-            System.out.println(String.format("Enc: %.2f, Dec: %.2f", convertMS(encrypt), convertMS(decrypt)));
+            assertEquals(val1 + add * val2, decriptedVal);
+            System.out.println(String.format("Enc: %.2f, Dec: %.2f Avg Add:  %.2f", convertMS(encrypt), convertMS(decrypt), convertMS(addTime)));
         }
     }
 
@@ -151,5 +158,6 @@ public class ECElGamalTest {
         int decriptedVal = ECElGamal.decrypt32(cipherAfter, key32);
         assertEquals(decriptedVal, val);
     }
+
 
 }

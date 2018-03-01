@@ -50,8 +50,8 @@ public class ECElGamal {
     public static int NID_X9_62_prime239v1 = 412;
     public static int NID_X9_62_prime256v1 = 415;
 
-    private static long[] default32BitParams = {119963L, 103997L};
-    private static long[] default64BitParams = {3624683L, 3356513L, 3315317L};
+    private static long[] default32BitParams = {1429L, 1931L, 1733L};
+    private static long[] default64BitParams = {6173L, 7577L, 7589L, 6761L, 7639L};
 
     static {
         try {
@@ -116,7 +116,7 @@ public class ECElGamal {
      * @return CRT-pramams for 32-bit integers
      */
     public static CRTParams getDefault32BitParams() {
-        return generateParams(default32BitParams, 17);
+        return generateParams(default32BitParams, 11);
     }
 
     /**
@@ -124,7 +124,7 @@ public class ECElGamal {
      * @return CRT-pramams for 64-bit integers
      */
     public static CRTParams getDefault64BitParams() {
-        return generateParams(default64BitParams, 22);
+        return generateParams(default64BitParams, 13);
     }
 
     /**
