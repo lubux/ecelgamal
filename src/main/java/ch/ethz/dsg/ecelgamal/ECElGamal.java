@@ -51,7 +51,7 @@ public class ECElGamal {
     public static int NID_X9_62_prime256v1 = 415;
 
     private static long[] default32BitParams = {1429L, 1931L, 1733L};
-    private static long[] default64BitParams = {6173L, 7577L, 7589L, 6761L, 7639L};
+    private static long[] default64BitParams = {6607L, 8011L, 8171L, 8017L, 8111L};
 
     static {
         try {

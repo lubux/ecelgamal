@@ -36,6 +36,7 @@ import ch.ethz.dsg.ecelgamal.ECElGamal;
 import org.junit.*;
 
 import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.Random;
 
 import static junit.framework.TestCase.assertEquals;
@@ -51,7 +52,7 @@ public class ECElGamalTest {
 
     @BeforeClass
     public static void init() {
-            ECElGamal.initBsgsTable(1 << 17);
+            ECElGamal.initBsgsTable(1 << 14);
     }
 
     @AfterClass
@@ -144,7 +145,7 @@ public class ECElGamalTest {
             long decriptedVal = ECElGamal.decrypt64(cipher1, key64);
             decrypt = System.nanoTime() - decrypt;
             assertEquals(val1 + add * val2, decriptedVal);
-            System.out.println(String.format("Enc: %.2f, Dec: %.2f Avg Add:  %.2f", convertMS(encrypt), convertMS(decrypt), convertMS(addTime)));
+            System.out.println(String.format("Enc: %.2f, Dec: %.2f Avg Add: %.2f", convertMS(encrypt), convertMS(decrypt), convertMS(addTime)));
         }
     }
 
@@ -157,6 +158,12 @@ public class ECElGamalTest {
         ECElGamal.ECElGamalCiphertext cipherAfter = ECElGamal.ECElGamalCiphertext.decode(encode);
         int decriptedVal = ECElGamal.decrypt32(cipherAfter, key32);
         assertEquals(decriptedVal, val);
+    }
+
+    @Test
+    public void paramsPrint() {
+        ECElGamal.CRTParams params = ECElGamal.generateCRTParams(new SecureRandom(), 13, 5);
+        System.out.println(params.getStringRep());
     }
 
 

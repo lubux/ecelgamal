@@ -35,9 +35,10 @@
 #include "crtecelgamal.h"
 
 
-uint64_t small_integer_primes[2] = {119963L, 103997L};
+uint64_t small_integer_primes[3] = {1429L, 1931L, 1733L};
 
-uint64_t big_integer_primes[3] = {3624683L, 3356513L, 3315317L};
+//uint64_t big_integer_primes[5] = {14347L, 14303L, 15761L, 11257L, 16267L};
+uint64_t big_integer_primes[5] = {6607L, 8011L, 8171L, 8017L, 8111L};
 
 int crt_params_generate(crtgamal_params_t params, int dbits, int num_primes) {
     BIGNUM *d;
@@ -93,9 +94,9 @@ int create_params_from_default(crtgamal_params_t params, uint64_t *primes, int n
 int crt_params_create_default(crtgamal_params_t params, char default_params_id) {
 
     if (default_params_id == DEFAULT_32_INTEGER_PARAMS) {
-        create_params_from_default(params, small_integer_primes, 2);
+        create_params_from_default(params, small_integer_primes, 3);
     } else if (default_params_id == DEFAULT_64_INTEGER_PARAMS){
-        create_params_from_default(params, big_integer_primes, 3);
+        create_params_from_default(params, big_integer_primes, 5);
     } else {
         return -1;
     }
