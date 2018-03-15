@@ -52,10 +52,10 @@ Plain EC-ElGamal 32-bit integers
 Avg ENC Time 0.238853ms Avg DEC Time 275.811 ms
 
 CRT optimized EC-ElGamal 32-bit integers
-Avg ENC Time 0.417877ms Avg DEC Time 0.245387ms 
+Avg ENC Time 0.61461ms Avg DEC Time 0.339739ms 
 
 CRT optimized EC-ElGamal 64-bit integers
-Avg ENC Time 0.608484ms Avg DEC Time 0.705621ms 
+Avg ENC Time 1.00067ms Avg DEC Time 0.560923ms 
 ```
 
 ## Security
