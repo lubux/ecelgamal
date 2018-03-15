@@ -36,6 +36,7 @@ package ch.ethz.dsg.ecelgamal;
 
 import java.math.BigInteger;
 import java.security.Key;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -279,6 +280,14 @@ public class ECElGamal {
                 System.arraycopy(encodedCiphertext, iter*pointSize, ciphertexts[iter], 0, pointSize);
             }
             return new ECElGamalCiphertext(ciphertexts);
+        }
+
+        public ECElGamalCiphertext copy() {
+            byte[][] ciphertextsCopy = new byte[ciphertexts.length][];
+            for (int i=0; i<ciphertexts.length; i++) {
+                ciphertextsCopy[i] = Arrays.copyOf(ciphertexts[i], ciphertexts[i].length);
+            }
+            return new ECElGamalCiphertext(ciphertextsCopy);
         }
     }
 
