@@ -1,5 +1,7 @@
 # EC-ElGamal
 
+[![Build status](https://travis-ci.org/lubux/ecelgamal.svg?branch=master)](https://travis-ci.org/lubux/ecelgamal)
+
 This repository contains a C implementation of the additive homomorphic elliptic curve based EL-Gamal cryptographic scheme and a corresponding Java JNI wrapper. The elliptic curve operations of OpenSSL are used for the implementation.
 Ciphertexts can be added toghether such that the decrypted result corresponds to the sum of the plaintexts (i.e. p1 + p2 = Dec(Enc(p1) ++ Enc(p2)))) similar to the Paillier-cryptosystem.
 
