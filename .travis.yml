@@ -1,0 +1,6 @@
+matrix:
+  include:
+    - language: C
+      script: ./native/compile-and-install.sh && ./native/out/ecelgamal
+    - language: java
+      script: mvn package
